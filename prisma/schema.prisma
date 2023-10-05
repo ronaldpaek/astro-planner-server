@@ -11,13 +11,25 @@ datasource db {
 }
 
 model User {
+  id           String         @id @default(uuid())
+  firstName    String
+  lastName     String
+  email        String         @unique
+  password     String
+  googleId     String?        @unique
+  githubId     String?        @unique
+  profile      Profile?
+  trips        Trip[]
+  RefreshToken RefreshToken[]
+}
+
+model RefreshToken {
   id        String   @id @default(uuid())
-  firstName String
-  lastName  String
-  email     String   @unique
-  password  String
-  profile   Profile?
-  trips     Trip[]
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  token     String   @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime
 }
 
 model Profile {
