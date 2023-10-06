@@ -1,14 +1,17 @@
 import express from "express";
 
+import userRoutes from "./userRoutes.js";
+
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.send("Hi Mom!");
+router.get("/", (req, res, next) => {
+  try {
+    res.send("Hi Mom!");
+  } catch (err) {
+    next(err);
+  }
 });
 
-router.use("/", (err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send("Something broke!");
-});
+router.use("/users", userRoutes);
 
 export default router;

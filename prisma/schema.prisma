@@ -12,8 +12,8 @@ datasource db {
 
 model User {
   id           String         @id @default(uuid())
-  firstName    String
-  lastName     String
+  firstName    String?
+  lastName     String?
   email        String         @unique
   password     String
   googleId     String?        @unique
@@ -41,6 +41,12 @@ model Profile {
   gender   String?
   user     User      @relation(fields: [userId], references: [id])
 }
+
+// enum Location {
+//   New_York
+//   Los_Angeles
+//   Chicago
+// }
 
 model Trip {
   id           String        @id @default(uuid())
