@@ -11,25 +11,13 @@ datasource db {
 }
 
 model User {
-  id           String         @id @default(uuid())
-  firstName    String?
-  lastName     String?
-  email        String         @unique
-  password     String
-  googleId     String?        @unique
-  githubId     String?        @unique
-  profile      Profile?
-  trips        Trip[]
-  RefreshToken RefreshToken[]
-}
-
-model RefreshToken {
   id        String   @id @default(uuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  token     String   @unique
-  createdAt DateTime @default(now())
-  expiresAt DateTime
+  firstName String
+  lastName  String
+  email     String   @unique
+  password  String
+  profile   Profile?
+  trips     Trip[]
 }
 
 model Profile {
@@ -42,37 +30,77 @@ model Profile {
   user     User      @relation(fields: [userId], references: [id])
 }
 
-// enum Location {
-//   New_York
-//   Los_Angeles
-//   Chicago
-// }
+enum Location {
+  NEW_YORK_CITY
+  LOS_ANGELES
+  CHICAGO
+  TORONTO
+}
 
 model Trip {
   id           String        @id @default(uuid())
-  location     String
+  location     Location
   checkIn      DateTime
   checkOut     DateTime
-  adults       Int
-  children     Int
-  infants      Int
+  passengers   Int           @default(1)
   userId       String
   user         User          @relation(fields: [userId], references: [id])
   reservations Reservation[]
-  preferences  Preference[]
 }
 
 model Reservation {
-  id      String @id @default(uuid())
-  type    String // hotel, flight, car, etc.
-  details String // JSON data or link to another model with details
-  tripId  String
-  trip    Trip   @relation(fields: [tripId], references: [id])
+  id                  String              @id @default(uuid())
+  bookingConfirmation String?
+  checkIn             DateTime
+  checkOut            DateTime
+  tripId              String
+  trip                Trip                @relation(fields: [tripId], references: [id])
+  HotelReservation    HotelReservation[]
+  FlightReservation   FlightReservation[]
+  CarReservation      CarReservation[]
 }
 
-model Preference {
-  id     String @id @default(uuid())
-  tripId String
-  trip   Trip   @relation(fields: [tripId], references: [id])
-  // other fields...
+model HotelReservation {
+  id            String      @id @default(uuid())
+  hotelName     String?
+  hotelPhone    String?
+  location      String
+  reservationId String
+  reservation   Reservation @relation(fields: [reservationId], references: [id])
 }
+
+model FlightReservation {
+  id            String      @id @default(uuid())
+  airlineName   String
+  flightNumber  String?
+  reservationId String
+  departure     String
+  arrival       String
+  reservation   Reservation @relation(fields: [reservationId], references: [id])
+}
+
+model CarReservation {
+  id              String      @id @default(uuid())
+  agencyName      String
+  carType         String?
+  pickupLocation  String
+  dropoffLocation String
+  reservationId   String
+  reservation     Reservation @relation(fields: [reservationId], references: [id])
+}
+
+// model Preference {
+//   id     String @id @default(uuid())
+//   tripId String
+//   trip   Trip   @relation(fields: [tripId], references: [id])
+//   // other fields...
+// }
+
+// model RefreshToken {
+//   id        String   @id @default(uuid())
+//   userId    String
+//   user      User     @relation(fields: [userId], references: [id])
+//   token     String   @unique
+//   createdAt DateTime @default(now())
+//   expiresAt DateTime
+// }

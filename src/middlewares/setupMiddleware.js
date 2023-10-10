@@ -6,16 +6,15 @@ import passport from "../config/passportConfig.js";
 
 dotenv.config();
 
-const setupMiddleware = (app, isProduction, PORT) => {
+const setupMiddleware = (app, isProduction, origin) => {
   // Enable CORS
   app.use(
-    cors({
-      origin: isProduction
-        ? "https://www.example.com"
-        : `http://localhost:${PORT}`,
-      credentials: true,
-    })
+    cors()
   );
+
+  // {
+  //     origin: isProduction ? "https://www.example.com" : origin,
+  //   }
 
   app.use(express.json()); // Parse JSON automatically
   app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies automatically
