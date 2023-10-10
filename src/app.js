@@ -13,10 +13,10 @@ dotenv.config();
 // Initialize express app
 const app = express();
 const isProduction = process.env.NODE_ENV === "production";
-const port = process.env.PORT || 3333;
+const origin = process.env.ORIGIN;
 
 // Setup general middleware
-setupMiddleware(app, isProduction, port);
+setupMiddleware(app, isProduction, origin);
 
 // Setup Routes
 app.use("/", routes);
