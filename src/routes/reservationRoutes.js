@@ -40,6 +40,10 @@ router.post("/flights/:tripId", async (req, res) => {
       departureAirport,
     } = req.body;
 
+    const trip = await prisma.trip.findUnique({
+      where: { id: tripId },
+    });
+
     if (!trip) {
       return res.send({
         success: false,
@@ -68,6 +72,76 @@ router.post("/flights/:tripId", async (req, res) => {
       });
     }
     const reservation = await prisma.reservation.create({
+      data: {
+        userId: req.user.id,
+        airlineName,
+        flightNumber,
+        arrivalDate,
+        departureDate,
+        arrivalAirport,
+        departureAirport,
+        tripId,
+      },
+    });
+
+    res.send({
+      success: true,
+      reservation,
+    });
+  } catch (error) {
+    res.send({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+//  PUT/reservations/flights
+
+router.put("/flights/:reservationId", async (req, res) => {
+  const { reservationId } = req.params;
+  console.log(req.user);
+  try {
+    const {
+      arrivalDate,
+      departureDate,
+      airlineName,
+      flightNumber,
+      arrivalAirport,
+      departureAirport,
+    } = req.body;
+
+    // if (!trip) {
+    //   return res.send({
+    //     success: false,
+    //     error: "Trip not found.",
+    //   });
+    // }
+
+    // if (req.user.id !== trip.userId) {
+    //   return res.send({
+    //     success: false,
+    //     error: "You must be the owner of this trip to make a reservation!",
+    //   });
+    // }
+
+    // const userId = req.user ? req.user.id : null;
+    if (!arrivalDate || !departureDate) {
+      return res.send({
+        success: false,
+        error: "You must provide all fields to create a flight reservation",
+      });
+    }
+    if (!req.user) {
+      return res.send({
+        success: false,
+        error: "Login to create a flight reservation.",
+      });
+    }
+    const reservation = await prisma.reservation.update({
+      where: {
+        id: reservation.id,
+      },
       data: {
         userId: req.user.id,
         airlineName,

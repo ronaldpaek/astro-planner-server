@@ -37,12 +37,12 @@ router.post("/", async (req, res) => {
         error: "You must provide all fields to create a trip",
       });
     }
-    if (!req.user) {
-      return res.send({
-        success: false,
-        error: "Login to create a trip.",
-      });
-    }
+    // if (!req.user) {
+    //   return res.send({
+    //     success: false,
+    //     error: "Login to create a trip.",
+    //   });
+    // }
     const trip = await prisma.trip.create({
       data: {
         userId: req.user.id,
@@ -89,12 +89,12 @@ router.put("/:tripId", async (req, res) => {
       });
     }
 
-    if (!req.user) {
-      return res.send({
-        success: false,
-        error: "Login to create a trip.",
-      });
-    }
+    // if (!req.user) {
+    //   return res.send({
+    //     success: false,
+    //     error: "Login to create a trip.",
+    //   });
+    // }
 
     if (req.user.id !== trip.userId) {
       return res.send({
