@@ -5,7 +5,7 @@ import issueJWT from "../utils/jwt.js";
 
 export const signup = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, firstName, lastName } = req.body;
 
     // Validate input
     if (!email || !password) {
@@ -19,6 +19,8 @@ export const signup = async (req, res, next) => {
 
     const user = await prisma.user.create({
       data: {
+        firstName,
+        lastName,
         email,
         password: hashedPassword,
       },
@@ -71,7 +73,7 @@ export const login = async (req, res, next) => {
     // Check user existence and password validity
     const isPasswordValid =
       user && (await bcrypt.compare(password, user.password));
-    
+
     if (!user || !isPasswordValid) {
       return res.status(401).json({
         success: false,
