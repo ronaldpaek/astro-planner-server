@@ -52,8 +52,8 @@ model Trip {
 model Reservation {
   id                  String   @id @default(uuid())
   bookingConfirmation String?
-  checkIn             DateTime
-  checkOut            DateTime
+  checkIn             String?
+  checkOut            String?
   hotelName           String?
   hotelPhone          String?
   hotelLocation       String?
@@ -61,8 +61,8 @@ model Reservation {
   flightNumber        String?
   departureAirport    String?
   arrivalAirport      String?
-  departureDate       String?
-  arrivalDate         String?
+  departureDate       DateTime
+  arrivalDate         DateTime
   carRentalAgency     String?
   carType             String?
   pickupLocation      String?
