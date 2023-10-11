@@ -1,5 +1,5 @@
 {
-  "name": "wander-whisper-travels-server",
+  "name": "astro-planner-server",
   "version": "1.0.0",
   "type": "module",
   "engines": {
