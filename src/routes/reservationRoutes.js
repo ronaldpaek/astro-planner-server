@@ -27,17 +27,26 @@ router.get("/", async (req, res) => {
 });
 //  POST /reservations/flights
 
-router.post("/flights/:tripId", async (req, res) => {
-  const { tripId } = req.params;
-  //console.log(req.user);
+router.post("/", async (req, res) => {
   try {
     const {
-      arrivalDate,
-      departureDate,
+      bookingConfirmation,
+      checkIn,
+      checkOut,
+      hotelName,
+      hotelPhone,
+      hotelLocation,
       airlineName,
       flightNumber,
-      arrivalAirport,
       departureAirport,
+      arrivalAirport,
+      departureDate,
+      arrivalDate,
+      carRentalAgency,
+      carType,
+      pickupLocation,
+      dropoffLocation,
+      tripId,
     } = req.body;
 
     const trip = await prisma.trip.findUnique({
@@ -74,12 +83,22 @@ router.post("/flights/:tripId", async (req, res) => {
     const reservation = await prisma.reservation.create({
       data: {
         userId: req.user.id,
+        bookingConfirmation,
+        checkIn,
+        checkOut,
+        hotelName,
+        hotelPhone,
+        hotelLocation,
         airlineName,
         flightNumber,
-        arrivalDate,
-        departureDate,
-        arrivalAirport,
         departureAirport,
+        arrivalAirport,
+        departureDate,
+        arrivalDate,
+        carRentalAgency,
+        carType,
+        pickupLocation,
+        dropoffLocation,
         tripId,
       },
     });
@@ -98,39 +117,52 @@ router.post("/flights/:tripId", async (req, res) => {
 
 //  PUT/reservations/flights
 
-router.put("/flights/:reservationId", async (req, res) => {
+router.put("/:reservationId", async (req, res) => {
   const { reservationId } = req.params;
   console.log(reservationId);
   try {
     const {
-      arrivalDate,
-      departureDate,
+      bookingConfirmation,
+      checkIn,
+      checkOut,
+      hotelName,
+      hotelPhone,
+      hotelLocation,
       airlineName,
       flightNumber,
-      arrivalAirport,
       departureAirport,
+      arrivalAirport,
+      departureDate,
+      arrivalDate,
+      carRentalAgency,
+      carType,
+      pickupLocation,
+      dropoffLocation,
       tripId,
     } = req.body;
 
-    // if (!trip) {
-    //   return res.send({
-    //     success: false,
-    //     error: "Trip not found.",
-    //   });
-    // }
+    const reservation = await prisma.reservation.findUnique({
+      where: { id: reservationId },
+    });
 
-    // if (req.user.id !== trip.userId) {
-    //   return res.send({
-    //     success: false,
-    //     error: "You must be the owner of this trip to make a reservation!",
-    //   });
-    // }
+    if (!reservation) {
+      return res.send({
+        success: false,
+        error: "Reservation not found.",
+      });
+    }
 
-    // const userId = req.user ? req.user.id : null;
+    if (req.user.id !== reservation.userId) {
+      return res.send({
+        success: false,
+        error: "You must be the owner of this reservation to update it!",
+      });
+    }
+
     if (!arrivalDate || !departureDate) {
       return res.send({
         success: false,
-        error: "You must provide all fields to create a flight reservation",
+        error: "You must provide all mandatory to create a flight reservation",
       });
     }
     if (!req.user) {
@@ -139,25 +171,84 @@ router.put("/flights/:reservationId", async (req, res) => {
         error: "Login to create a flight reservation.",
       });
     }
-    const reservation = await prisma.reservation.update({
+    const updatedReservation = await prisma.reservation.update({
       where: {
         id: reservationId,
       },
       data: {
         userId: req.user.id,
+        bookingConfirmation,
+        checkIn,
+        checkOut,
+        hotelName,
+        hotelPhone,
+        hotelLocation,
         airlineName,
         flightNumber,
-        arrivalDate,
-        departureDate,
-        arrivalAirport,
         departureAirport,
+        arrivalAirport,
+        departureDate,
+        arrivalDate,
+        carRentalAgency,
+        carType,
+        pickupLocation,
+        dropoffLocation,
         tripId,
       },
     });
 
     res.send({
       success: true,
-      reservation,
+      updatedReservation,
+    });
+  } catch (error) {
+    res.send({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+// Delete reservation
+router.delete("/:reservationId", async (req, res) => {
+  try {
+    const { reservationId } = req.params;
+    const reservation = await prisma.reservation.findUnique({
+      where: {
+        id: reservationId,
+      },
+    });
+
+    if (!reservation) {
+      return res.send({
+        success: false,
+        error: "Reservation not found.",
+      });
+    }
+
+    if (req.user.id !== reservation.userId) {
+      return res.send({
+        success: false,
+        error: "You must be the owner of this reservation to delete!",
+      });
+    }
+
+    if (!req.user) {
+      return res.send({
+        success: false,
+        error: "Please log in to delete a reservation.",
+      });
+    }
+
+    const deletedReservation = await prisma.reservation.delete({
+      where: {
+        id: reservationId,
+      },
+    });
+
+    res.send({
+      success: true,
+      deletedReservation,
     });
   } catch (error) {
     res.send({
