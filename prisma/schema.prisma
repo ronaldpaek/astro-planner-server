@@ -11,13 +11,14 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  firstName String
-  lastName  String
-  email     String   @unique
-  password  String
-  profile   Profile?
-  trips     Trip[]
+  id          String        @id @default(uuid())
+  firstName   String
+  lastName    String
+  email       String        @unique
+  password    String
+  profile     Profile?
+  trips       Trip[]
+  Reservation Reservation[]
 }
 
 model Profile {
@@ -49,44 +50,27 @@ model Trip {
 }
 
 model Reservation {
-  id                  String              @id @default(uuid())
+  id                  String   @id @default(uuid())
   bookingConfirmation String?
   checkIn             DateTime
   checkOut            DateTime
+  hotelName           String?
+  hotelPhone          String?
+  hotelLocation       String?
+  airlineName         String?
+  flightNumber        String?
+  departureAirport    String?
+  arrivalAirport      String?
+  departureDate       String?
+  arrivalDate         String?
+  carRentalAgency     String?
+  carType             String?
+  pickupLocation      String?
+  dropoffLocation     String?
   tripId              String
-  trip                Trip                @relation(fields: [tripId], references: [id])
-  HotelReservation    HotelReservation[]
-  FlightReservation   FlightReservation[]
-  CarReservation      CarReservation[]
-}
-
-model HotelReservation {
-  id            String      @id @default(uuid())
-  hotelName     String?
-  hotelPhone    String?
-  location      String
-  reservationId String
-  reservation   Reservation @relation(fields: [reservationId], references: [id])
-}
-
-model FlightReservation {
-  id            String      @id @default(uuid())
-  airlineName   String
-  flightNumber  String?
-  reservationId String
-  departure     String
-  arrival       String
-  reservation   Reservation @relation(fields: [reservationId], references: [id])
-}
-
-model CarReservation {
-  id              String      @id @default(uuid())
-  agencyName      String
-  carType         String?
-  pickupLocation  String
-  dropoffLocation String
-  reservationId   String
-  reservation     Reservation @relation(fields: [reservationId], references: [id])
+  trip                Trip     @relation(fields: [tripId], references: [id])
+  userId              String
+  user                User     @relation(fields: [userId], references: [id])
 }
 
 // model Preference {

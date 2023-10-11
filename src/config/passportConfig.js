@@ -17,6 +17,7 @@ const options = {
 passport.use(
   new Strategy(options, async (payload, done) => {
     try {
+      console.log(payload.id);
       const user = await prisma.user.findUnique({
         where: {
           id: payload.id,
@@ -28,13 +29,13 @@ passport.use(
           id: user.id,
           email: user.email,
         };
-        
+
         return done(null, cleanUser);
       }
 
       return done(null, false);
     } catch (err) {
-      console.log('hi')
+      console.log("hi");
       console.error(err);
       return done(err, false);
     }
