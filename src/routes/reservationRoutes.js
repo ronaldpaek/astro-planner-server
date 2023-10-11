@@ -29,7 +29,7 @@ router.get("/", async (req, res) => {
 
 router.post("/flights/:tripId", async (req, res) => {
   const { tripId } = req.params;
-  console.log(req.user);
+  //console.log(req.user);
   try {
     const {
       arrivalDate,
@@ -100,7 +100,7 @@ router.post("/flights/:tripId", async (req, res) => {
 
 router.put("/flights/:reservationId", async (req, res) => {
   const { reservationId } = req.params;
-  console.log(req.user);
+  console.log(reservationId);
   try {
     const {
       arrivalDate,
@@ -109,6 +109,7 @@ router.put("/flights/:reservationId", async (req, res) => {
       flightNumber,
       arrivalAirport,
       departureAirport,
+      tripId,
     } = req.body;
 
     // if (!trip) {
@@ -140,7 +141,7 @@ router.put("/flights/:reservationId", async (req, res) => {
     }
     const reservation = await prisma.reservation.update({
       where: {
-        id: reservation.id,
+        id: reservationId,
       },
       data: {
         userId: req.user.id,
