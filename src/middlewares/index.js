@@ -1,6 +1,5 @@
 import setupMiddleware from "./setupMiddleware.js";
 import authMiddleware from "./authMiddleware.js";
-import errorHandler from "./errorHandler.js";
-import routeNotFoundHandler from "./routeNotFoundHandler.js";
+import { errorHandler, routeNotFoundHandler } from "./errorHandlers.js";
 
 export { setupMiddleware, authMiddleware, errorHandler, routeNotFoundHandler };

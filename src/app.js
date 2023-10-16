@@ -21,10 +21,10 @@ setupMiddleware(app, isProduction, origin);
 // Setup Routes
 app.use("/", routes);
 
+// Route Not Found Handler
+app.use("*", routeNotFoundHandler);
+
 // General Error Handler
 app.use(errorHandler);
-
-// Route Not Found Handler
-app.use(routeNotFoundHandler);
 
 export default app;

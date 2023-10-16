@@ -1,19 +1,15 @@
 import express from "express";
 
-import * as userController from "../controllers/userController.js";
+import { register, login, me } from "../controllers/userControllers.js";
 import { authMiddleware } from "../middlewares/index.js";
 
 const router = express.Router();
 
-// Public route
-router.post("/signup", userController.signup);
-router.post("/login", userController.login);
+// Unprotected routes
+router.post("/register", register);
+router.post("/login", login);
 
-// Protected route
-router.get("/protected", authMiddleware, (req, res, next) => {
-  return res
-    .status(200)
-    .json({ success: true, message: "You are authorized!" });
-});
+// Protected routes
+router.get("/me", authMiddleware, me);
 
 export default router;
